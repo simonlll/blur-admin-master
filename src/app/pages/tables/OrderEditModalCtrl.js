@@ -14,7 +14,7 @@ angular.module('BlurAdmin.pages.tables').
 
    
    $scope.OrderItem = {};
-   //存储OrderItem
+   //存储OrderItem, 这里并没有存到数据库中,仅仅更新到了smartTableDataOrderItem, 只有在真正存订单时才存到数据库
    $scope.saveOrderItem = function(orderItemId){
     
     if ($scope.OrderItem.name == undefined || $scope.OrderItem.name == "") {
@@ -65,89 +65,44 @@ angular.module('BlurAdmin.pages.tables').
         return;
     }
 
-
+    //如果orderItemeId不为空,就是编辑
     if(orderItemId){
-      // myFactory.http_req_full(orderItemId, "PATCH", {
-      //     "name": $scope.OrderItem.name,
-      //     "price": $scope.OrderItem.price,
-      //     "amount": $scope.OrderItem.amount
-      //   },
-      // function (err, results) {
-        
-      //     if (err == "ok") {
-      //         myFactory.layerMsg({
-      //             "CN": "更改成功",
-      //             "EN": "Modify Successfully"
-      //         }, 1);
-      //          var modifyIndex;
-      //           angular.forEach( $scope.smartTableDataOrderItem, function(element, index) {
-      //             if(element.id === orderItemId) {
-      //               modifyIndex = index;
-      //             }
-      //           });
-      //           $scope.smartTableDataOrderItem[modifyIndex] = {id: orderItemId, name: results.name, price: results.price, amount: results.amount};
-      //           $scope.smartTableDataOrderItem=[].concat($scope.smartTableDataOrderItem);
-      //     } else {
-      //          myFactory.layerMsg({
-      //                 "CN": "更改失败",
-      //                 "EN": "Add Failed"
-      //             }, 5);
-      //     }
-      // });
-
+      //遍历smartTableDataOrderItem数组,取得要编辑的OrderItem id
       var modifyIndex;
       angular.forEach( $scope.smartTableDataOrderItem, function(element, index) {
         if(element.id === orderItemId) {
           modifyIndex = index;
         }
       });
+      //更新该数组
       $scope.smartTableDataOrderItem[modifyIndex] = {id: orderItemId, name: $scope.OrderItem.name, price: $scope.OrderItem.price, amount: $scope.OrderItem.amount};
+      //刷新页面
       $scope.smartTableDataOrderItem=[].concat($scope.smartTableDataOrderItem);
-    //添加orderitem项
+    //添加新orderitem项
     }else {
-      // var AddItemURI = "/item";
-      // myFactory.http_req(AddItemURI, "POST", {
-      //       "name": $scope.OrderItem.name,
-      //       "price": $scope.OrderItem.price,
-      //       "amount": $scope.OrderItem.amount,
-      //       "order" : querys.itemlink
-      //   },
-      //       function (err, results) {
-              
-      //           if (err == "ok") {
-      //               myFactory.layerMsg({
-      //                   "CN": "添加成功",
-      //                   "EN": "Add Successfully"
-      //               }, 1);
-      //           $scope.smartTableDataOrderItem.push({id: results._links.self.href, name: results.name, price: results.price, amount: results.amount});
-      //           } else {
-      //                myFactory.layerMsg({
-      //                       "CN": "添加失败",
-      //                       "EN": "Add Failed"
-      //                   }, 5);
-      //           }
-      // });
-
+      //在数组中加入新加的orderItem
       $scope.smartTableDataOrderItem.push({id: $scope.smartTableDataOrderItem.length+1, name: $scope.OrderItem.name, price: $scope.OrderItem.price, amount: $scope.OrderItem.amount, isNew: true});
     }
     $scope.isadd=false;
     $scope.OrderItem = {};
    }
-   //如果数据库里面有记录，将记录插入该数组
+
+
+   //如果数据库里面有记录，将记录插入该数组, 保留该记录是为了防备用户并没有点按存储订单按钮,那之前的删除就无效了,需要恢复。
    $scope.markedDeletedItem = [];
    //删除orderitem
   $scope.removeOrderItem = function(orderItemId){
 
     myFactory.layer_confirm("您是确定要删除此项目？", "Are you sure to delete the order item?", function (data) { 
-      //只用通过异步的方法，删除操作才能刷新smartTableDataOrderItem的变化，不知道为什么
+      //只用通过异步的方法，删除操作才能刷新smartTableDataOrderItem的变化，不知道为什么,所以这里执行一个查询,并没有真正的
+      //在数据库中删除该OrderItem. 注意: 是'GET' 请求, 而不是'DELETE'请求
       $http({
-            url: querys.itemlink,    
+            url: querys.itemlink,
             method: 'GET',
             timeout: 15000,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization' : 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjdW4iLCJjcmVhdGVkIjoxNDk2NjMwMzQ5OTQwLCJleHAiOjE0OTcyMzUxNDl9.j0Z6UzaISX9-qYwtk4LwOJPJ66Psm-06Vras37DXPFoNUc9vh50sZA8hrALLFoaYgH8N19dyR_Ew3QHpgxGrLg'
-                // 'sessionKey': service.GetToken()
+                'Authorization' : getCookie('token')
             },
             xhrFields: {
                 withCredentials: true
@@ -159,7 +114,7 @@ angular.module('BlurAdmin.pages.tables').
                 "CN": "删除成功",
                 "EN": "Delete Successfully"
             }, 1);
-            
+            //在smartTableDataOrderItem中移除该OrderItem
             var deleteIndex;
             angular.forEach( $scope.smartTableDataOrderItem, function(element, index) {
                 if(element.id === orderItemId) {
@@ -169,6 +124,8 @@ angular.module('BlurAdmin.pages.tables').
             $scope.smartTableDataOrderItem.splice(deleteIndex,1);
             $scope.smartTableDataOrderItem=[].concat($scope.smartTableDataOrderItem);
             console.log(orderItemId);
+            //如果orderItemId存在,说明是从数据库取来的记录,而不是刚刚添加的记录（还没有存在数据库）
+            //保留该记录是为了防备用户并没有点按存储订单按钮,那之前的删除就无效了,需要恢复
             if(orderItemId.indexOf("http")===0){
               console.log("order=" + orderItemId);
               $scope.markedDeletedItem.push(orderItemId);
@@ -181,29 +138,10 @@ angular.module('BlurAdmin.pages.tables').
             }, 5);
        });
 
-
-
-
-      // myFactory.layerMsg({
-      //                     "CN": "删除成功",
-      //                     "EN": "delete Successfully"
-      // }, 1);
-      // var deleteIndex;
-      // angular.forEach( $scope.smartTableDataOrderItem, function(element, index) {
-      //           if(element.id === orderItemId) {
-      //             deleteIndex = index;
-      //           }
-      //         });
-      // $scope.smartTableDataOrderItem.splice(deleteIndex,1);
-      // $scope.smartTableDataOrderItem=[].concat($scope.smartTableDataOrderItem);
-      // console.log(orderItemId);
-      // if(orderItemId.indexOf("http")===0){
-      //   console.log("order=" + orderItemId);
-      //   $scope.markedDeletedItem.push(orderItemId);
-      // }     
   });
 }
 
+   //取得用于编辑OrderItem的信息
    $scope.editOrderItem = function(orderItemId){
     angular.forEach( $scope.smartTableDataOrderItem, function(element, index) {
       if(element.id === orderItemId) {
@@ -218,11 +156,12 @@ angular.module('BlurAdmin.pages.tables').
    
 
    $scope.isadd = false;
-  //添加订单项目
+  //添加订单项目,显示添加orderitem的界面
    $scope.addneworderitem = function(){
     $scope.isadd = true;
    }
 
+   //隐藏orderitem的界面
    $scope.hide = function(){
     $scope.isadd = false;
     $scope.OrderItem = {};
@@ -258,15 +197,15 @@ angular.module('BlurAdmin.pages.tables').
         deliveryDate: "",
         customer:""
     };
-
+  //获取待编辑的order的信息
   $http({
             url: querys.itemlink,    
             method: 'GET',
             timeout: 15000,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization' : 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjdW4iLCJjcmVhdGVkIjoxNDk2NjMwMzQ5OTQwLCJleHAiOjE0OTcyMzUxNDl9.j0Z6UzaISX9-qYwtk4LwOJPJ66Psm-06Vras37DXPFoNUc9vh50sZA8hrALLFoaYgH8N19dyR_Ew3QHpgxGrLg'
-                // 'sessionKey': service.GetToken()
+                'Authorization' : getCookie('token')
+
             },
             xhrFields: {
                 withCredentials: true
@@ -344,15 +283,14 @@ angular.module('BlurAdmin.pages.tables').
 
       console.log($scope.withSearchItem.selected.label);
       console.log($scope.withSearchItem.selected.value);
-
+      //存储订单的更改
       $http({
             url: querys.itemlink,    
             method: 'PATCH',
             timeout: 15000,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization' : 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjdW4iLCJjcmVhdGVkIjoxNDk2NjMwMzQ5OTQwLCJleHAiOjE0OTcyMzUxNDl9.j0Z6UzaISX9-qYwtk4LwOJPJ66Psm-06Vras37DXPFoNUc9vh50sZA8hrALLFoaYgH8N19dyR_Ew3QHpgxGrLg'
-                // 'sessionKey': service.GetToken()
+                'Authorization' : getCookie('token')
             },
             xhrFields: {
                 withCredentials: true
@@ -406,7 +344,7 @@ angular.module('BlurAdmin.pages.tables').
               }
             });
 
-
+            //这里真正从数据库中删除客户之前删除的OrderItem（之前是伪删除）
             if($scope.markedDeletedItem.length>0){
               angular.forEach( $scope.markedDeletedItem ,function(element, index) {
                 myFactory.http_req_full(element, "DELETE", {}, 

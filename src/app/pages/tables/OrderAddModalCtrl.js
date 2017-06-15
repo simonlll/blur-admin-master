@@ -1,8 +1,9 @@
-1//为了添加用户模态框添加的 controller
+1//为了添加订单模态框添加的 controller
 angular.module('BlurAdmin.pages.tables').
       controller('OrderAddModalCtrl', function ($scope, $uibModalInstance, querys, myFactory) {
 
-  
+   //默认不显示OrderItem编辑页面
+   $scope.isadd = false;
    $scope.smartTablePageSize = 10;
    //取得订单item的列表
    $scope.smartTableDataOrderItem = [];
@@ -59,7 +60,7 @@ angular.module('BlurAdmin.pages.tables').
         return;
     }
 
-
+    //如果orderItem不为空,说明是在编辑orderitem
     if(orderItemId){
       myFactory.http_req_full(orderItemId, "PATCH", {
           "name": $scope.OrderItem.name,
@@ -79,7 +80,9 @@ angular.module('BlurAdmin.pages.tables').
                     modifyIndex = index;
                   }
                 });
+              //在更改成功后, 需要刷新smartTable的OrderItem列表, 先更改smartTableDataOrderItem数组
                 $scope.smartTableDataOrderItem[modifyIndex] = {id: orderItemId, name: results.name, price: results.price, amount: results.amount};
+              //smartTable数组中,如果数量没有变化,页面不刷新,采用下面的方法,可以刷新
                 $scope.smartTableDataOrderItem=[].concat($scope.smartTableDataOrderItem);
           } else {
                myFactory.layerMsg({
@@ -88,7 +91,7 @@ angular.module('BlurAdmin.pages.tables').
                   }, 5);
           }
       });
-     
+        //如果orderitem为空,说明是新添加orderitem, 在这里会存入数据库, 如果最后用户取消了订单的添加, 再在数据库中删除他们
     }else {
       var AddItemURI = "/item";
       myFactory.http_req(AddItemURI, "POST", {
@@ -103,7 +106,7 @@ angular.module('BlurAdmin.pages.tables').
                         "CN": "添加成功",
                         "EN": "Add Successfully"
                     }, 1);
-                    
+                    //将新加入的OrderItem压入smartTableDataOrderItem数组,因为数量变化,会自动刷新页面
                     $scope.smartTableDataOrderItem.push({id: results._links.self.href, name: results.name, price: results.price, amount: results.amount});
                 } else {
                      myFactory.layerMsg({
@@ -115,7 +118,7 @@ angular.module('BlurAdmin.pages.tables').
 
       
     }
-    
+    //隐藏OrderItem编辑页面
     $scope.isadd=false;
     $scope.OrderItem = {};
    }
@@ -131,12 +134,13 @@ angular.module('BlurAdmin.pages.tables').
                   "EN": "delete Successfully"
               }, 1);
               var deleteIndex;
-
+              //遍历smartTableDataOrderItem, 找出待删除的OrderItem的ID
               angular.forEach( $scope.smartTableDataOrderItem, function(element, index) {
                 if(element.id === orderItemId) {
                   deleteIndex = index;
                 }
               });
+              //将删除的OrderItem从smartTableDataOrderItem数组中移除
               $scope.smartTableDataOrderItem.splice(deleteIndex,1);
           } else {
                myFactory.layerMsg({
@@ -148,25 +152,27 @@ angular.module('BlurAdmin.pages.tables').
     });
   }
 
+   //从smartTableDataOrderItem数组中取到待编辑OrderItem的信息
    $scope.editOrderItem = function(orderItemId){
     angular.forEach( $scope.smartTableDataOrderItem, function(element, index) {
       if(element.id === orderItemId) {
         $scope.OrderItem = {id: element.id, name: element.name, price: element.price, amount: element.amount};
       }
     });
-
+    //显示OrderItem编辑界面
     $scope.isadd = true;
 
    }
 
    
 
-   $scope.isadd = false;
-  //添加订单项目
+
+  //添加OrderItem, 显示OrderItem编辑页面
    $scope.addneworderitem = function(){
     $scope.isadd = true;
    }
 
+   //隐藏OrderItem编辑页面
    $scope.hide = function(){
     $scope.isadd = false;
     $scope.OrderItem = {};
@@ -178,8 +184,13 @@ angular.module('BlurAdmin.pages.tables').
    $scope.withSearchItem = {};
 
   //取得所有客户的列表：
+
+
+  //先初始化存储客户列表的数组
   $scope.selectWithSearchItems = [];
 
+
+  //去数据库中取的所有客户的列表,并放入数组
   $scope.query = function(){
         myFactory.http_req('/customer', "GET", {},
                       function (err, results) {
@@ -195,10 +206,10 @@ angular.module('BlurAdmin.pages.tables').
                       });
      } 
 
-     $scope.query();
+  //执行上面的方法,取得客户列表
+  $scope.query();
 
-  
-
+   //初始化空白的Order对象
    $scope.OrderObj = {
         description : "",
         deliveryDate : ""
@@ -243,6 +254,7 @@ angular.module('BlurAdmin.pages.tables').
       } 
 
       var AddUrl = "/simonorder";
+      //itemsArray 存储有所有已经添加到数据库的OrderItems的键值,将他们关联到order表
       var itemsArray = [];
       angular.forEach($scope.smartTableDataOrderItem, function(element, index) {
         itemsArray.push(element.id);

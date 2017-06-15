@@ -17,25 +17,15 @@ angular.module('BlurAdmin.pages.tables').
         email: ""
     };
 
-  $http({
-            url: querys.itemlink,    
-            method: 'GET',
-            timeout: 15000,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization' : getCookie('token')
-            },
-            xhrFields: {
-                withCredentials: true
-            },
-            crossDomain: true,
-            data: {}
-        }).success(function (result) {
-          $scope.UserObj = result;
-            
-        }).error(function (result, data, status, headers, config) {
-            console.log("出错了");
-       });
+    //取得要编辑用户的信息
+    myFactory.http_req_full(querys.itemlink, "GET", {},
+        function (err, results) {
+            if (err == "ok") {
+                $scope.UserObj = results;
+            } else {
+                console.log("失败");
+            }
+        });
   
 
    
@@ -88,41 +78,32 @@ angular.module('BlurAdmin.pages.tables').
       }
 
 
-      $http({
-            url: querys.itemlink,    
-            method: 'PUT',
-            timeout: 15000,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization' : 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjdW4iLCJjcmVhdGVkIjoxNDk2NjMwMzQ5OTQwLCJleHAiOjE0OTcyMzUxNDl9.j0Z6UzaISX9-qYwtk4LwOJPJ66Psm-06Vras37DXPFoNUc9vh50sZA8hrALLFoaYgH8N19dyR_Ew3QHpgxGrLg'
-                // 'sessionKey': service.GetToken()
-            },
-            xhrFields: {
-                withCredentials: true
-            },
-            crossDomain: true,
-            data: {
+      //存储用户修改的信息
+      myFactory.http_req_full(querys.itemlink, "PUT",
+          {
               "firstName": $scope.UserObj.firstName,
               "lastName": $scope.UserObj.lastName,
               "age": $scope.UserObj.age,
               "email": $scope.UserObj.email,
               "username": $scope.UserObj.username
-            }
-        }).success(function (result) {
-            $uibModalInstance.close();
-            /*成功关闭模态框*/
-            myFactory.layerMsg({
-                "CN": "更改成功",
-                "EN": "Modify Successfully"
-            }, 1);
-            
-            setTimeout(function () {
-                querys.querylink();
-            }, 500);
-            
-        }).error(function (result, data, status, headers, config) {
-            console.log("出错了");
-       });
+          },
+          function (err, results) {
+              if (err == "ok") {
+                  $uibModalInstance.close();
+                  /*成功关闭模态框*/
+                  myFactory.layerMsg({
+                      "CN": "更改成功",
+                      "EN": "Modify Successfully"
+                  }, 1);
+
+                  setTimeout(function () {
+                      querys.querylink();
+                  }, 500);
+              } else {
+                  console.log("失败");
+              }
+          });
+
 
     //close函数是在模态框关闭后调用的函数,他会将这个参数传到主控制器的results函数中,作为回调值
     $uibModalInstance.close();

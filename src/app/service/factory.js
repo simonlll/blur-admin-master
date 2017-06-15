@@ -17,7 +17,6 @@ service.host = "http://localhost:8099/";
             timeout: 15000,
             headers: {
                 'Content-Type': 'application/json',
-                // 'Authorization' : 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjdW4iLCJjcmVhdGVkIjoxNDk2NjMwMzQ5OTQwLCJleHAiOjE0OTcyMzUxNDl9.j0Z6UzaISX9-qYwtk4LwOJPJ66Psm-06Vras37DXPFoNUc9vh50sZA8hrALLFoaYgH8N19dyR_Ew3QHpgxGrLg',
                 'Authorization' : getCookie('token')
             },
             xhrFields: {
