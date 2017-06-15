@@ -1,18 +1,18 @@
 /**
- * @author v.lugovsky
- * created on 16.12.2015
+ * @author Simon LIN
+ * created on 15.06.2017
  */
 (function () {
   'use strict';
 
   angular.module('BlurAdmin.pages', [
     'ui.router',
-
+      //只保留dashboard, tables, 其他的隐藏
     'BlurAdmin.pages.dashboard',
     'BlurAdmin.pages.ui',
     'BlurAdmin.pages.components',
     'BlurAdmin.pages.form',
-    'BlurAdmin.pages.tables',
+    'BlurAdmin.pages.tables'
     // 'BlurAdmin.pages.charts',
     // 'BlurAdmin.pages.maps',
     // 'BlurAdmin.pages.profile',
@@ -20,9 +20,11 @@
       .config(routeConfig);
 
   /** @ngInject */
+
   function routeConfig($urlRouterProvider, baSidebarServiceProvider) {
     $urlRouterProvider.otherwise('/dashboard');
 
+    // 隐藏了附加的登录页等
     baSidebarServiceProvider.addStaticItem({
       title: 'Pages',
       icon: 'ion-document',

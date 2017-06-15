@@ -1,0 +1,74 @@
+<div class="widgets">
+    <div class="row">
+        <div class="col-md-12">
+            <div ba-panel ba-panel-class="with-scroll">
+                <div class="horizontal-scroll">
+                    <div class="form-group select-page-size-wrap ">
+                        <div class="add-row-editable-table" style="padding-left:10px; padding-top: 5px;">
+                            <button class="btn btn-primary" ng-click="addOrder()">添加订单</button>
+                        </div>
+                        <label>每页显示数量
+                            <select class="form-control selectpicker show-tick" title="Rows on page" selectpicker
+                                    ng-model="smartTablePageSize" ng-options="i for i in [5,10,15,20,25]">
+                            </select>
+                        </label>
+                    </div>
+
+                    <table class="table" st-table="smartTableDataDisplay" st-safe-src="smartTableData">
+                        <thead>
+                        <tr class="sortable ">
+                            <th class="table-id" st-sort="id" st-sort-default="true"></th>
+                            <th st-sort="description">订单描述</th>
+                            <th st-sort="deliveryDate">订单时间</th>
+                            <th st-sort="customer">客户名称</th>
+
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th><input st-search="description" placeholder="搜索订单描述"
+                                       class="input-sm form-control search-input"
+                                       type="search"/></th>
+                            <th><input st-search="deliveryDate" placeholder="搜索时间"
+                                       class="input-sm form-control search-input"
+                                       type="search"/></th>
+                            <th><input st-search="customer" placeholder="搜索客户名称"
+                                       class="input-sm form-control search-input"
+                                       type="search"/></th>
+                            <th>操作
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in smartTableDataDisplay">
+                            <td class="table-id">{{item.id}}</td>
+                            <td>{{item.description}}</td>
+                            <td>{{item.deliveryDate | date:"yyyy-MM-dd h:mma"}}</td>
+                            <td>{{item.customer}}</td>
+
+                            <td>
+                                <button class="btn btn-primary editable-table-button btn-xs"
+                                        ng-click="editOrder(item._links.self.href)">编辑
+                                </button>
+                                <button class="btn btn-danger editable-table-button btn-xs"
+                                        ng-click="removeOrder(item._links.self.href)">删除
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="6" class="text-center">
+                                <div st-pagination="" st-items-by-page="smartTablePageSize"
+                                     st-displayed-pages="5"></div>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+

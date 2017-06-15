@@ -1,18 +1,16 @@
 /**
- * @author v.lugovsky
- * created on 16.12.2015
+ * @author simon lin
+ * created on 14.06.2017
  */
 (function () {
   'use strict';
 
   angular.module('BlurAdmin.pages.tables')
-      .controller('TablesPageCtrl', TablesPageCtrl);
+      .controller('UserTablesPageCtrl', UserTablesPageCtrl);
 
-
-  
 
   /** @ngInject */
-  function TablesPageCtrl($scope, $filter, editableOptions, editableThemes, $uibModal, myFactory, $http) {
+  function UserTablesPageCtrl($scope, $filter, editableOptions, editableThemes, $uibModal, myFactory, $http, $document) {
 
     $scope.smartTablePageSize = 10;
 
@@ -47,9 +45,10 @@
       //这里很关键,是打开模态框的过程
       var modalInstance = $uibModal.open({
         animation: $scope.animationsEnabled,//打开时的动画开关
-        templateUrl: 'myModalContent.html',//模态框的页面内容,这里的url是可以自己定义的,也就意味着什么都可以写
-        controller: 'ModalInstanceCtrl',//这是模态框的控制器,是用来控制模态框的
-        size: 'lg',//模态框的大小尺寸
+        templateUrl: 'app/pages/tables/modals/newuser.html',//模态框的页面内容,这里的url是可以自己定义的,也就意味着什么都可以写
+        controller: 'UserAddModalCtrl',//这是模态框的控制器,是用来控制模态框的
+        size: 'lg',//模态框的大小尺寸,
+
         resolve: {//这是一个入参,这个很重要,它可以把主控制器中的参数传到模态框控制器中
           querys: function () {//items是一个回调函数
             return $scope.query;//这个值会被模态框的控制器获取到
@@ -73,8 +72,8 @@
       //这里很关键,是打开模态框的过程
       var modalInstance = $uibModal.open({
         animation: $scope.animationsEnabled,//打开时的动画开关
-        templateUrl: 'myModalEditContent.html',//模态框的页面内容,这里的url是可以自己定义的,也就意味着什么都可以写
-        controller: 'ModalEditInstanceCtrl',//这是模态框的控制器,是用来控制模态框的
+        templateUrl: 'app/pages/tables/modals/edituser.html',//模态框的页面内容,这里的url是可以自己定义的,也就意味着什么都可以写
+        controller: 'UserEditModalCtrl',//这是模态框的控制器,是用来控制模态框的
         size: 'lg',//模态框的大小尺寸
         resolve: {//这是一个入参,这个很重要,它可以把主控制器中的参数传到模态框控制器中
           querys: function () {//items是一个回调函数

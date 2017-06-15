@@ -1,0 +1,88 @@
+<div class="widgets">
+    <div class="row">
+        <div class="col-md-12">
+            <div ba-panel ba-panel-class="with-scroll">
+                <div class="horizontal-scroll">
+                    <div class="form-group select-page-size-wrap ">
+                        <div class="add-row-editable-table" style="padding-left:10px; padding-top: 5px;">
+                            <button class="btn btn-primary" ng-click="addUser()">添加</button>
+                        </div>
+                        <label>每页显示数量
+                            <select class="form-control selectpicker show-tick" title="Rows on page" selectpicker
+                                    ng-model="smartTablePageSize" ng-options="i for i in [5,10,15,20,25]">
+                            </select>
+                        </label>
+                    </div>
+
+                    <table class="table" st-table="smartTableDataDisplay" st-safe-src="smartTableData">
+                        <thead>
+                        <tr class="sortable ">
+                            <th class="table-id" st-sort="id" st-sort-default="true"></th>
+                            <th st-sort="firstName">姓</th>
+                            <th st-sort="firstName">姓</th>
+                            <th st-sort="lastName">名</th>
+                            <th st-sort="username">用户名</th>
+                            <th st-sort="email">邮件</th>
+                            <th st-sort="age">年龄</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th><input st-search="firstName" placeholder="搜索姓"
+                                       class="input-sm form-control search-input"
+                                       type="search"/></th>
+                            <th><input st-search="firstName" placeholder="搜索姓"
+                                       class="input-sm form-control search-input"
+                                       type="search"/></th>
+                            <th><input st-search="lastName" placeholder="搜索名" class="input-sm form-control search-input"
+                                       type="search"/></th>
+                            <th><input st-search="username" placeholder="搜索用户名"
+                                       class="input-sm form-control search-input"
+                                       type="search"/></th>
+                            <th><input st-search="email" placeholder="搜索邮件地址" class="input-sm form-control search-input"
+                                       type="search"/>
+                            </th>
+                            <th><input st-search="age" placeholder="搜索年龄" class="input-sm form-control search-input"
+                                       type="search"/>
+                            </th>
+                            <th>操作
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in smartTableDataDisplay">
+                            <td class="table-id">{{item.id}}</td>
+                            <td>{{item.firstName}}</td>
+                            <td>{{item.firstName}}</td>
+                            <td>{{item.lastName}}</td>
+                            <td>{{item.username}}</td>
+                            <td><a class="email-link" ng-href="mailto:{{item.email}}">{{item.email}}</a></td>
+                            <td>{{item.age}}</td>
+                            <td>
+                                <button class="btn btn-primary editable-table-button btn-xs"
+                                        ng-click="editUser(item._links.self.href)">编辑
+                                </button>
+                                <button class="btn btn-danger editable-table-button btn-xs"
+                                        ng-click="removeUser(item._links.self.href)">删除
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="6" class="text-center">
+                                <div st-pagination="" st-items-by-page="smartTablePageSize"
+                                     st-displayed-pages="5"></div>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+

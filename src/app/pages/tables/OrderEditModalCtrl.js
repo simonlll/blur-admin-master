@@ -1,6 +1,6 @@
 //为了编辑用户模态框添加的 controller
 angular.module('BlurAdmin.pages.tables').
-      controller('OrderModalEditInstanceCtrl', function ($scope, $uibModalInstance, querys, myFactory,$http) {
+      controller('OrderEditModalCtrl', function ($scope, $uibModalInstance, querys, myFactory,$http) {
 
  // var info = {
  //      querylink : $scope.query,

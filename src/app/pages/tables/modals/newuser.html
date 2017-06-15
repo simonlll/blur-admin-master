@@ -1,0 +1,45 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" ng-click="cancel()"><span aria-hidden="true">&times;</span><span class="sr-only"  >Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">编辑用户信息</h4>
+    </div>
+    <form class="form-horizontal" method="post">
+        <div class="modal-body">
+            <div class="row form-group">
+                <label for="firstName" class="col-sm-1 control-label">姓</label>
+                <div class="col-sm-11">
+                    <input type="text" ng-model="UserObj.firstName" class="form-control ng-pristine ng-valid" id="firstName" >
+                </div>
+            </div>
+            <div class="row form-group">
+                <label for="lastName" class="col-sm-1 control-label">名</label>
+                <div class="col-sm-11">
+                    <input type="text" ng-model="UserObj.lastName" class="form-control ng-pristine ng-valid" id="lastName">
+                </div>
+            </div>
+
+            <div class="row form-group">
+                <label for="username" class="col-sm-1 control-label">用户名</label>
+                <div class="col-sm-11">
+                    <input type="text" ng-model="UserObj.username" class="form-control ng-pristine ng-valid" id="username">
+                </div>
+            </div>
+            <div class="row form-group">
+                <label for="age" class="col-sm-1 control-label">年龄</label>
+                <div class="col-sm-11">
+                    <input type="text" ng-model="UserObj.age" class="form-control ng-pristine ng-valid" id="age">
+                </div>
+            </div>
+            <div class="row form-group">
+                <label for="email" class="col-sm-1 control-label">邮箱</label>
+                <div class="col-sm-11">
+                    <input type="text" ng-model="UserObj.email" class="form-control ng-pristine ng-valid" id="email">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cancel()">Close</button>
+            <button type="button" id="btn" class="btn btn-primary" ng-click="saveuser()">保存</button>
+        </div>
+    </form>
+</div>

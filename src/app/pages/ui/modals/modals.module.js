@@ -15,7 +15,7 @@
           url: '/modals',
           templateUrl: 'app/pages/ui/modals/modals.html',
           controller: 'ModalsPageCtrl',
-          title: 'Modals',
+          title: 'modals',
           sidebarMeta: {
             order: 300,
           },

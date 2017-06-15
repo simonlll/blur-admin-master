@@ -1,6 +1,6 @@
-//为了添加用户模态框添加的 controller
+1//为了添加用户模态框添加的 controller
 angular.module('BlurAdmin.pages.tables').
-      controller('OrderModalInstanceCtrl', function ($scope, $uibModalInstance, querys, myFactory) {
+      controller('OrderAddModalCtrl', function ($scope, $uibModalInstance, querys, myFactory) {
 
   
    $scope.smartTablePageSize = 10;

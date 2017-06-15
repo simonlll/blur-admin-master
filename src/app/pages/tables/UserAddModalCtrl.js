@@ -1,6 +1,6 @@
 //为了添加用户模态框添加的 controller
 angular.module('BlurAdmin.pages.tables').
-      controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, querys, myFactory) {
+      controller('UserAddModalCtrl', function ($scope, $uibModalInstance, querys, myFactory) {
 
 
 
